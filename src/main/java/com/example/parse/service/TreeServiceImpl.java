@@ -4,14 +4,19 @@ import com.example.parse.model.ArtifactId;
 import com.example.parse.model.DependencyTree;
 import com.example.parse.model.GroupId;
 import com.example.parse.model.Version;
+import com.example.parse.model.dto.ModelDto;
+import lombok.AllArgsConstructor;
 import org.eclipse.aether.artifact.Artifact;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class TreeServiceImpl implements TreeService{
+    private final ParseService parseService;
 
     public DependencyTree createTree(List<Artifact> artifacts, String projectName) {
         List<GroupId> groups = new ArrayList<>();
@@ -47,6 +52,12 @@ public class TreeServiceImpl implements TreeService{
 
     private ArtifactId createArtifact(Artifact artifact) {
         Version version = new Version(artifact.getVersion());
-        return new ArtifactId(artifact.getArtifactId(), version);
+        ArtifactId artifactId = new ArtifactId(artifact.getArtifactId(), version);
+        File file = artifact.getFile();
+        if(file != null){
+            ModelDto modelDto = parseService.getArtifactsFromFile(file);
+            artifactId.setTree(createTree(modelDto.getArtifacts(), modelDto.getProjectName()));
+        }
+        return artifactId;
     }
 }

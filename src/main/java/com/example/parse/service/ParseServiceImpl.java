@@ -1,6 +1,7 @@
 package com.example.parse.service;
 
 import com.example.parse.model.dto.ModelDto;
+import lombok.AllArgsConstructor;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.building.DefaultModelBuilderFactory;
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
@@ -16,7 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ParseServiceImpl implements ParseService{
+    private ArtifactResolveService resolveService;
 
     public ModelDto getArtifactsFromFile(File file){
         DefaultModelBuildingRequest modelBuildingRequest = new DefaultModelBuildingRequest()
@@ -38,11 +41,9 @@ public class ParseServiceImpl implements ParseService{
 
     private List<Artifact> getArtifactsFromModel(Model model){
         List<Artifact> artifacts = new ArrayList<>();
-        model.getDependencies().forEach(d -> {
-            artifacts.add(new DefaultArtifact(d.getGroupId(), d.getArtifactId(), d.getType(),
-                    d.getVersion()));
-        });
-        return artifacts;
+        model.getDependencies().forEach(d -> artifacts.add(new DefaultArtifact(d.getGroupId(),
+                d.getArtifactId(), "pom", d.getVersion())));
+        return resolveService.resolve(artifacts);
     }
 
 }
