@@ -1,7 +1,7 @@
 package com.example.parse.controller;
 
 import com.example.parse.facade.ParseFacade;
-import com.example.parse.model.DependencyTree;
+import com.example.parse.model.Project;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,15 +18,15 @@ import java.util.List;
 @AllArgsConstructor
 public class ParseController {
     private ParseFacade parseFacade;
-    private static final String path =  "C:\\Users\\User\\IdeaProjects\\Parse\\src\\main\\resources\\files\\";
+    private static final String path = "/Users/zchornyi/IdeaProjects/dependenciesParser/src/main/resources/files/";
 
     @PostMapping("/getTree")
-    public List<DependencyTree> getModelFromFile(@RequestParam(value = "file", required = true)
-                                                             MultipartFile multipartFile){
+    public List<Project> getModelFromFile(@RequestParam(value = "file", required = true)
+                                          MultipartFile multipartFile) {
         File file = new File(path + multipartFile.getOriginalFilename());
         try {
             multipartFile.transferTo(file);
-            return parseFacade.createTreeFromFile(file);
+            return parseFacade.createProjectsFromFile(file);
         } catch (IOException e) {
             throw new RuntimeException("Bad request");
         }

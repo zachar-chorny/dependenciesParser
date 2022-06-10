@@ -1,21 +1,31 @@
 package com.example.parse.config;
 
+import com.example.parse.model.RepositoriesDto;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.model.resolution.ModelResolver;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
+import org.jboss.shrinkwrap.resolver.impl.maven.bootstrap.MavenRepositorySystem;
+import org.jboss.shrinkwrap.resolver.impl.maven.internal.MavenModelResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+
 @Configuration
 public class AppConfig {
-    public static final String TARGET_LOCAL_REPOSITORY = "target/local-repository";
+    private static final String TARGET_LOCAL_REPOSITORY = "target/local-repository";
+    private static final String REMOTE_REPOSITORY_URL = "https://repo1.maven.org/maven2/";
 
     @Bean
     public RepositorySystem getRepositorySystem() {
@@ -28,12 +38,33 @@ public class AppConfig {
     }
 
     @Bean
-    public static DefaultRepositorySystemSession getRepositorySystemSession(RepositorySystem system) {
+    public DefaultRepositorySystemSession getRepositorySystemSession(RepositorySystem system) {
         DefaultRepositorySystemSession repositorySystemSession = MavenRepositorySystemUtils
                 .newSession();
         LocalRepository localRepository = new LocalRepository(TARGET_LOCAL_REPOSITORY);
         repositorySystemSession.setLocalRepositoryManager(
                 system.newLocalRepositoryManager(repositorySystemSession, localRepository));
         return repositorySystemSession;
+    }
+
+    @Bean
+    public MavenXpp3Reader getMavenReader() {
+        return new MavenXpp3Reader();
+    }
+
+    @Bean
+    public RepositoriesDto getRepositories() {
+        return new RepositoriesDto(Arrays.asList(getCentralMavenRepository()));
+    }
+
+    @Bean
+    public ModelResolver getResolver(RepositoriesDto repositoriesDto, RepositorySystemSession session) {
+        return new MavenModelResolver(new MavenRepositorySystem(), session,
+                repositoriesDto.getRepositories());
+    }
+
+    private RemoteRepository getCentralMavenRepository() {
+        return new RemoteRepository.Builder("content", "default", REMOTE_REPOSITORY_URL)
+                .build();
     }
 }

@@ -1,9 +1,11 @@
 package com.example.parse.service;
 
-import com.example.parse.model.dto.ModelDto;
+import org.apache.maven.model.Model;
 
 import java.io.File;
+import java.util.Optional;
 
 public interface ParseService {
-    ModelDto getArtifactsFromFile(File file);
+
+    Optional<Model> getModelFromFile(File file);
 }

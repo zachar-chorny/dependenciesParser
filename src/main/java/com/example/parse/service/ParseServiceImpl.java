@@ -1,49 +1,42 @@
 package com.example.parse.service;
 
-import com.example.parse.model.dto.ModelDto;
 import lombok.AllArgsConstructor;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.building.DefaultModelBuilderFactory;
-import org.apache.maven.model.building.DefaultModelBuildingRequest;
-import org.apache.maven.model.building.ModelBuilder;
-import org.apache.maven.model.building.ModelBuildingException;
-import org.apache.maven.model.building.ModelBuildingResult;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.DefaultArtifact;
+import org.apache.maven.model.building.*;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.model.resolution.ModelResolver;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ParseServiceImpl implements ParseService{
-    private ArtifactResolveService resolveService;
+public class ParseServiceImpl implements ParseService {
+    private final MavenXpp3Reader reader;
+    private final ModelResolver modelResolver;
 
-    public ModelDto getArtifactsFromFile(File file){
-        DefaultModelBuildingRequest modelBuildingRequest = new DefaultModelBuildingRequest()
-                .setPomFile(file);
+    public Optional<Model> getModelFromFile(File file) {
+        ModelBuildingRequest modelBuildingRequest = new DefaultModelBuildingRequest()
+                .setPomFile(file).setProcessPlugins(false).setSystemProperties(System.getProperties())
+                .setModelResolver(modelResolver);
         ModelBuilder modelBuilder = new DefaultModelBuilderFactory().newInstance();
         ModelBuildingResult modelBuildingResult;
         Model model;
         try {
             modelBuildingResult = modelBuilder.build(modelBuildingRequest);
             model = modelBuildingResult.getEffectiveModel();
-            List<Artifact> artifacts = getArtifactsFromModel(model);
-            return new ModelDto(model.getBuild().getFinalName(), artifacts);
+            try {
+                model.setParent(reader.read(new FileReader(file)).getParent());
+            } catch (XmlPullParserException | IOException ignored) {
+            }
+            return Optional.of(model);
         } catch (ModelBuildingException e) {
-            throw new RuntimeException("File reading failed");
+            return Optional.empty();
         }
-    }
-
-
-
-    private List<Artifact> getArtifactsFromModel(Model model){
-        List<Artifact> artifacts = new ArrayList<>();
-        model.getDependencies().forEach(d -> artifacts.add(new DefaultArtifact(d.getGroupId(),
-                d.getArtifactId(), "pom", d.getVersion())));
-        return resolveService.resolve(artifacts);
     }
 
 }
