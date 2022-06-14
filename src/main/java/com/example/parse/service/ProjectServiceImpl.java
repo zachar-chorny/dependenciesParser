@@ -20,7 +20,11 @@ import org.eclipse.aether.util.artifact.JavaScopes;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -66,9 +70,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     private Node getNodeFromDependency(Artifact artifact) {
         String scope = artifact.getProperties().get("scope");
-        if (scope == null) {
-            scope = "compile";
-        }
         Node node = Node.builder().groupId(artifact.getGroupId())
                 .artifactId(artifact.getArtifactId()).version(artifact.getVersion())
                 .type(artifact.getExtension())
