@@ -13,7 +13,7 @@ public class ParentNode extends Node {
         setArtifactId(node.getArtifactId());
         setGroupId(node.getGroupId());
         setVersion(node.getVersion());
-        setScope(node.getScope());
+        setScope(null);
         setType(node.getType());
         setChildren(node.getChildren());
     }

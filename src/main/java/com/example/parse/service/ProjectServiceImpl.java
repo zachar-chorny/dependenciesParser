@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -46,9 +44,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     private List<Node> createNodes(Model model) {
         List<Node> nodes = new ArrayList<>();
-        List<Artifact> artifacts = getArtifactsFromModel(model);
-        for (Artifact artifact : artifacts) {
-            nodes.add(getNodeFromDependency(artifact));
+        List<Dependency> dependencies = getDependenciesFromModel(model);
+        for (Dependency dependency : dependencies) {
+            nodes.add(getNodeFromDependency(dependency));
         }
         return nodes;
     }
@@ -58,7 +56,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (parent != null) {
             ParentNode parentNode = new ParentNode();
             Artifact artifact = artifactResolver.resolve(getArtifactFromParent(parent));
-            parentNode.setUp(getNodeFromDependency(artifact));
+            parentNode.setUp(getNodeFromDependency(new Dependency(artifact, null)));
             File file = artifact.getFile();
             if (file != null) {
                 parseService.getModelFromFile(file).ifPresent(m -> parentNode.setParentNode(createParent(m)));
@@ -68,16 +66,16 @@ public class ProjectServiceImpl implements ProjectService {
         return null;
     }
 
-    private Node getNodeFromDependency(Artifact artifact) {
-        String scope = artifact.getProperties().get("scope");
+    private Node getNodeFromDependency(Dependency dependency) {
+        Artifact artifact = dependency.getArtifact();
         Node node = Node.builder().groupId(artifact.getGroupId())
                 .artifactId(artifact.getArtifactId()).version(artifact.getVersion())
                 .type(artifact.getExtension())
-                .scope(scope).children(new ArrayList<>()).build();
+                .scope(dependency.getScope()).children(new ArrayList<>()).build();
         Optional<DependencyNode> dependencyNode = getDependencyNodeFromArtifact(artifact);
         if (dependencyNode.isPresent()) {
             List<DependencyNode> dependencyNodes = dependencyNode.get().getChildren();
-            dependencyNodes.forEach(d -> node.getChildren().add(getNodeFromDependency(d.getArtifact())));
+            dependencyNodes.forEach(d -> node.getChildren().add(getNodeFromDependency(d.getDependency())));
         }
         return node;
     }
@@ -94,15 +92,14 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    private List<Artifact> getArtifactsFromModel(Model model) {
-        List<Artifact> artifacts = new ArrayList<>();
+    private List<Dependency> getDependenciesFromModel(Model model) {
+        List<Dependency> dependencies = new ArrayList<>();
         model.getDependencies().forEach(d -> {
-            Map<String, String> properties = new HashMap<>();
-            properties.put("scope", d.getScope());
-            artifacts.add(new DefaultArtifact(d.getGroupId(),
-                    d.getArtifactId(), d.getType(), d.getVersion()).setProperties(properties));
+            Artifact artifact = new DefaultArtifact(d.getGroupId(),
+                    d.getArtifactId(), d.getType(), d.getVersion());
+            dependencies.add(new Dependency(artifact, d.getScope()));
         });
-        return artifacts;
+        return dependencies;
     }
 
     private Artifact getArtifactFromParent(Parent parent) {
