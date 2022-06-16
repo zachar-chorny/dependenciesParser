@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -27,20 +26,20 @@ public class ParseController {
     public List<Project> getModelFromFile(@RequestParam(required = false) Setting setting,
                                           @RequestParam(value = "file", required = false)
                                           MultipartFile multipartFile) {
-        List<Project> projects = new ArrayList<>();
-        if(multipartFile != null){
+        if (multipartFile != null && setting == null) {
             File file = Paths.get("", path + multipartFile
                     .getOriginalFilename()).toAbsolutePath().toFile();
             try {
                 multipartFile.transferTo(file);
-                projects.addAll(parseFacade.createProjectsFromFile(file));
-            } catch (IOException ignored) {}
-        }
-        if(setting != null){
+                return parseFacade.createProjectsFromFile(file);
+            } catch (IOException ignored) {
+                throw new RuntimeException("Bad request");
+            }
+        } else if (setting != null && multipartFile == null) {
             File file = new File(path);
-            projects.addAll(parseFacade.createProjectsFromFile(file));
+            return parseFacade.createProjectsFromFile(file);
         }
-        return projects;
+        throw new RuntimeException("Bad request");
     }
 
 }
