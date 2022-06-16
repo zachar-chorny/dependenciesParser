@@ -15,17 +15,18 @@ import java.util.List;
 @AllArgsConstructor
 public class ParseFacade {
     private final ParseService parseService;
-    private final ProjectService treeService;
+    private final ProjectService projectService;
 
     public List<Project> createProjectsFromFile(File file) {
         List<Project> projects = new ArrayList<>();
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
-                Arrays.stream(files).forEach(this::createProjectsFromFile);
+                Arrays.stream(files).forEach(f -> projects.addAll(createProjectsFromFile(f)));
             }
         } else {
-            parseService.getModelFromFile(file).ifPresent(p -> projects.add(treeService.createProjectFromModel(p)));
+            parseService.getModelFromFile(file).ifPresent(
+                    p -> projects.add(projectService.createProjectFromModel(p)));
 
         }
         return projects;
