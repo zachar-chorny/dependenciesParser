@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -21,9 +22,7 @@ public class ParseFacade {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
-                for (File file1 : files) {
-                    createProjectsFromFile(file1);
-                }
+                Arrays.stream(files).forEach(this::createProjectsFromFile);
             }
         } else {
             parseService.getModelFromFile(file).ifPresent(p -> projects.add(treeService.createProjectFromModel(p)));

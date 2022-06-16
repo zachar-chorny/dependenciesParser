@@ -11,19 +11,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@RequestMapping("/parse")
+@RequestMapping("/project")
 @AllArgsConstructor
 public class ParseController {
     private ParseFacade parseFacade;
-    private static final String path = "/Users/zchornyi/IdeaProjects/dependenciesParser/src/main/resources/files/";
+    private static final String path = "src/main/resources/files/";
 
-    @PostMapping("/getTree")
+    @PostMapping("/create")
     public List<Project> getModelFromFile(@RequestParam(value = "file", required = true)
                                           MultipartFile multipartFile) {
-        File file = new File(path + multipartFile.getOriginalFilename());
+        File file = Paths.get("", path + multipartFile
+                .getOriginalFilename()).toAbsolutePath().toFile();
         try {
             multipartFile.transferTo(file);
             return parseFacade.createProjectsFromFile(file);
