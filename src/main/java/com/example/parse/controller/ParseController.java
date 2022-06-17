@@ -1,5 +1,6 @@
 package com.example.parse.controller;
 
+import com.example.parse.exception.WrongParamsException;
 import com.example.parse.facade.ParseFacade;
 import com.example.parse.model.Project;
 import com.example.parse.model.Setting;
@@ -32,14 +33,14 @@ public class ParseController {
             try {
                 multipartFile.transferTo(file);
                 return parseFacade.createProjectsFromFile(file);
-            } catch (IOException ignored) {
-                throw new RuntimeException("Bad request");
+            } catch (IOException e) {
+                throw new WrongParamsException("Incorrect file");
             }
         } else if (setting != null && multipartFile == null) {
             File file = new File(path);
             return parseFacade.createProjectsFromFile(file);
         }
-        throw new RuntimeException("Bad request");
+        throw new WrongParamsException("Incorrect params, pass only one parameter");
     }
 
 }
