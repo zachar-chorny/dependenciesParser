@@ -6,6 +6,7 @@ import com.example.parse.model.Project;
 import com.example.parse.model.Setting;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class ParseController {
     private static final String path = "src/main/resources/files/";
 
     @PostMapping(value = "/create")
-    public List<Project> getModelFromFile(@RequestParam(required = false) Setting setting,
+    public List<Project> getModelFromFile(@RequestBody(required = false) Setting setting,
                                           @RequestParam(value = "file", required = false)
                                           MultipartFile multipartFile) {
         if (multipartFile != null && setting == null) {
