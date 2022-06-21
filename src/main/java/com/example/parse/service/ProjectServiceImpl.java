@@ -28,15 +28,13 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
     private final ParseService parseService;
-    private final RepositorySystem repositorySystem;
-    private final RepositorySystemSession repositorySystemSession;
-    private final RepositoriesDto repositoriesDto;
     private final ArtifactResolveService artifactResolver;
+    private final NodeService nodeService;
 
     @Override
     public Project createProjectFromModel(Model model) {
         Project project = new Project();
-        project.setName(model.getName());
+        project.setName(model.getArtifactId());
         project.setParentNode(createParent(model));
         project.setNodes(createNodes(model));
         return project;
@@ -46,7 +44,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<Node> nodes = new ArrayList<>();
         List<Dependency> dependencies = getDependenciesFromModel(model);
         for (Dependency dependency : dependencies) {
-            nodes.add(getNodeFromDependency(dependency));
+            nodes.add(nodeService.getNodeFromDependency(dependency));
         }
         return nodes;
     }
@@ -56,7 +54,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (parent != null) {
             ParentNode parentNode = new ParentNode();
             Artifact artifact = artifactResolver.resolve(getArtifactFromParent(parent));
-            parentNode.setUp(getNodeFromDependency(new Dependency(artifact, null)));
+            parentNode.setUp(nodeService.getNodeFromDependency(new Dependency(artifact, null)));
             File file = artifact.getFile();
             if (file != null) {
                 parseService.getModelFromFile(file).ifPresent(m -> parentNode.setParentNode(createParent(m)));
@@ -64,32 +62,6 @@ public class ProjectServiceImpl implements ProjectService {
             return parentNode;
         }
         return null;
-    }
-
-    private Node getNodeFromDependency(Dependency dependency) {
-        Artifact artifact = dependency.getArtifact();
-        Node node = Node.builder().groupId(artifact.getGroupId())
-                .artifactId(artifact.getArtifactId()).version(artifact.getVersion())
-                .type(artifact.getExtension())
-                .scope(dependency.getScope()).children(new ArrayList<>()).build();
-        Optional<DependencyNode> dependencyNode = getDependencyNodeFromArtifact(artifact);
-        if (dependencyNode.isPresent()) {
-            List<DependencyNode> dependencyNodes = dependencyNode.get().getChildren();
-            dependencyNodes.forEach(d -> node.getChildren().add(getNodeFromDependency(d.getDependency())));
-        }
-        return node;
-    }
-
-    private Optional<DependencyNode> getDependencyNodeFromArtifact(Artifact artifact) {
-        CollectRequest collectRequest = new CollectRequest();
-        collectRequest.setRoot(new Dependency(artifact, JavaScopes.COMPILE));
-        collectRequest.setRepositories(repositoriesDto.getRepositories());
-        try {
-            CollectResult collectResult = repositorySystem.collectDependencies(repositorySystemSession, collectRequest);
-            return Optional.of(collectResult.getRoot());
-        } catch (DependencyCollectionException e) {
-            return Optional.empty();
-        }
     }
 
     private List<Dependency> getDependenciesFromModel(Model model) {

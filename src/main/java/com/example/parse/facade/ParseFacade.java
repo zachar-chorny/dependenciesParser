@@ -1,7 +1,9 @@
 package com.example.parse.facade;
 
 import com.example.parse.model.Project;
+import com.example.parse.model.ProjectInstruction;
 import com.example.parse.service.ParseService;
+import com.example.parse.service.ProjectResolveService;
 import com.example.parse.service.ProjectService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.List;
 public class ParseFacade {
     private final ParseService parseService;
     private final ProjectService projectService;
+    private final ProjectResolveService projectResolveService;
 
     public List<Project> createProjectsFromFile(File file) {
         List<Project> projects = new ArrayList<>();
@@ -28,6 +31,18 @@ public class ParseFacade {
             parseService.getModelFromFile(file).ifPresent(
                     p -> projects.add(projectService.createProjectFromModel(p)));
 
+        }
+        return projects;
+    }
+
+    public List<Project> createProjectsFromFile(File file, List<ProjectInstruction> instructions) {
+        List<Project> projects = createProjectsFromFile(file);
+        for(ProjectInstruction instruction : instructions){
+            for(Project project : projects){
+                if(instruction.getName().equals(project.getName())){
+                    projectResolveService.resolveProject(project, instruction);
+                }
+            }
         }
         return projects;
     }

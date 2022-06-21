@@ -10,4 +10,5 @@ public class Project {
     private String name;
     private List<Node> nodes;
     private ParentNode parentNode;
+    private Project newProject;
 }
