@@ -32,25 +32,31 @@ public class ProjectResolveServiceImpl implements ProjectResolveService {
     }
 
     private void addNodes(List<Node> nodes, List<DependencyNode> dependencyNodes) {
-        for(DependencyNode dependencyNode : dependencyNodes){
-            nodes.add(getNode(dependencyNode));
+        if(dependencyNodes != null){
+            for(DependencyNode dependencyNode : dependencyNodes){
+                nodes.add(getNode(dependencyNode));
+            }
         }
     }
 
     private void replaceNodes(List<Node> nodes, List<DependencyNode> dependencyNodes) {
-        for(DependencyNode dependencyNode : dependencyNodes){
-            for(int i = 0; i < nodes.size(); i++){
-                Node node = nodes.get(i);
-                if(dependencyNode.getArtifactId().equals(node.getArtifactId())){
-                    nodes.set(i, getNode(dependencyNode));
+        if(dependencyNodes != null) {
+            for (DependencyNode dependencyNode : dependencyNodes) {
+                for (int i = 0; i < nodes.size(); i++) {
+                    Node node = nodes.get(i);
+                    if (dependencyNode.getArtifactId().equals(node.getArtifactId())) {
+                        nodes.set(i, getNode(dependencyNode));
+                    }
                 }
             }
         }
     }
 
     private void removeNodes(List<Node> nodes, List<String> artifactIds) {
-        for(String artifactId : artifactIds){
-            nodes.removeIf(node -> artifactId.equals(node.getArtifactId()));
+        if(artifactIds != null) {
+            for (String artifactId : artifactIds) {
+                nodes.removeIf(node -> artifactId.equals(node.getArtifactId()));
+            }
         }
     }
 

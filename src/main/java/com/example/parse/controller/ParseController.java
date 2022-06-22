@@ -1,12 +1,10 @@
 package com.example.parse.controller;
 
-import com.example.parse.exception.WrongParamsException;
 import com.example.parse.facade.ParseFacade;
 import com.example.parse.model.Project;
 import com.example.parse.model.ProjectInstruction;
 import com.example.parse.model.Setting;
 import lombok.AllArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -27,7 +26,7 @@ public class ParseController {
     private static final String path = "src/main/resources/files/";
 
     @PostMapping(value = "/create")
-    public List<Project> createProjects(@RequestBody Setting setting) {
+    public List<Project> createProjects(@RequestBody @Valid Setting setting) {
 //        if (multipartFile != null && setting == null) {
 //            File file = Paths.get("", path + multipartFile
 //                    .getOriginalFilename()).toAbsolutePath().toFile();

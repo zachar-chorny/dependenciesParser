@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 public class ArtifactResolveServiceImpl implements ArtifactResolveService {
     private final RepositorySystem repositorySystem;
     private final RepositorySystemSession session;
-
     private final RepositoriesDto repositories;
 
     @Override

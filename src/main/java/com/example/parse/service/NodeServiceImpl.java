@@ -56,7 +56,7 @@ public class NodeServiceImpl implements NodeService {
             nodes.add(node);
             List<DependencyNode> children = d.getChildren();
             if(!children.isEmpty()){
-                node.setChildren(getChildren(d.getChildren()));
+                node.setChildren(getChildren(children));
             }else{
                 node.setChildren(new ArrayList<>());
             }
