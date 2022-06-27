@@ -22,7 +22,7 @@ public class ParseFacade {
 
     public List<Project> createProjectsFromFile(File file) {
         List<Project> projects = new ArrayList<>();
-        if (file.isDirectory()) {
+        if (file != null && file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
                 Arrays.stream(files).forEach(f -> projects.addAll(createProjectsFromFile(f)));
