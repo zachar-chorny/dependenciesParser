@@ -40,7 +40,7 @@ public class ParseFacade {
         for(ProjectInstruction instruction : instructions){
             for(Project project : projects){
                 if(instruction.getName().equals(project.getName())){
-                    projectResolveService.resolveProject(project, instruction);
+                    project.setNewProject(projectResolveService.createNewProject(project, instruction));
                 }
             }
         }

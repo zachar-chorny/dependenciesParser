@@ -19,7 +19,7 @@ public class ProjectResolveServiceImpl implements ProjectResolveService {
     private final NodeService nodeService;
 
     @Override
-    public void resolveProject(Project project, ProjectInstruction instruction) {
+    public Project createNewProject(Project project, ProjectInstruction instruction) {
         List<Node> nodes = new ArrayList<>(project.getNodes());
         removeNodes(nodes, instruction.getArtifactIdsForRemoving());
         replaceNodes(nodes, instruction.getNodesFroReplacing());
@@ -28,7 +28,7 @@ public class ProjectResolveServiceImpl implements ProjectResolveService {
         newProject.setName(project.getName());
         newProject.setNodes(nodes);
         newProject.setParentNode(project.getParentNode());
-        project.setNewProject(newProject);
+        return newProject;
     }
 
     private void addNodes(List<Node> nodes, List<DependencyNode> dependencyNodes) {

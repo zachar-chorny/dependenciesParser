@@ -5,5 +5,5 @@ import com.example.parse.model.ProjectInstruction;
 
 public interface ProjectResolveService {
 
-     void resolveProject(Project project, ProjectInstruction instruction);
+     Project createNewProject(Project project, ProjectInstruction instruction);
 }
