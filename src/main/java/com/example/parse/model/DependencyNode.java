@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 public class DependencyNode {
 
-    private final String groupId;
-    private final String artifactId;
-    private final String version;
-    private final String type;
-    private final String scope;
+    private String groupId;
+    private String artifactId;
+    private String version;
+    private String type;
+    private String scope;
 }

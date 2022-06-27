@@ -9,8 +9,8 @@ import java.util.List;
 public class ProjectInstruction {
 
     @NotNull(message = "Name can't be null")
-    private final String name;
-    private final List<DependencyNode> nodesForAdding;
-    private final List<String> artifactIdsForRemoving;
-    private final List<DependencyNode> nodesFroReplacing;
+    private String name;
+    private List<DependencyNode> nodesForAdding;
+    private List<String> artifactIdsForRemoving;
+    private List<DependencyNode> nodesFroReplacing;
 }
