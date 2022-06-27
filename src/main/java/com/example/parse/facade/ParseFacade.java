@@ -22,15 +22,17 @@ public class ParseFacade {
 
     public List<Project> createProjectsFromFile(File file) {
         List<Project> projects = new ArrayList<>();
-        if (file != null && file.isDirectory()) {
-            File[] files = file.listFiles();
-            if (files != null) {
-                Arrays.stream(files).forEach(f -> projects.addAll(createProjectsFromFile(f)));
-            }
-        } else {
-            parseService.getModelFromFile(file).ifPresent(
-                    p -> projects.add(projectService.createProjectFromModel(p)));
+        if(file != null) {
+            if (file.isDirectory()) {
+                File[] files = file.listFiles();
+                if (files != null) {
+                    Arrays.stream(files).forEach(f -> projects.addAll(createProjectsFromFile(f)));
+                }
+            } else {
+                parseService.getModelFromFile(file).ifPresent(
+                        p -> projects.add(projectService.createProjectFromModel(p)));
 
+            }
         }
         return projects;
     }
