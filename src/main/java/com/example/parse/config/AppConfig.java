@@ -1,6 +1,8 @@
 package com.example.parse.config;
 
 import com.example.parse.model.RepositoriesDto;
+import org.apache.maven.model.building.DefaultModelBuildingRequest;
+import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.resolution.ModelResolver;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
@@ -61,6 +63,13 @@ public class AppConfig {
     public ModelResolver getResolver(RepositoriesDto repositoriesDto, RepositorySystemSession session) {
         return new MavenModelResolver(new MavenRepositorySystem(), session,
                 repositoriesDto.getRepositories());
+    }
+
+    @Bean
+    public ModelBuildingRequest getModelBuildingRequest(ModelResolver modelResolver) {
+        return new DefaultModelBuildingRequest()
+                .setProcessPlugins(false).setSystemProperties(System.getProperties())
+                .setModelResolver(modelResolver);
     }
 
     private RemoteRepository getCentralMavenRepository() {

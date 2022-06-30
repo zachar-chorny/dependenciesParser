@@ -17,17 +17,14 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ParseServiceImpl implements ParseService {
     private final MavenXpp3Reader reader;
-    private final ModelResolver modelResolver;
+    private final ModelBuildingRequest modelBuildingRequest;
 
     public Optional<Model> getModelFromFile(File file) {
-        ModelBuildingRequest modelBuildingRequest = new DefaultModelBuildingRequest()
-                .setPomFile(file).setProcessPlugins(false).setSystemProperties(System.getProperties())
-                .setModelResolver(modelResolver);
         ModelBuilder modelBuilder = new DefaultModelBuilderFactory().newInstance();
         ModelBuildingResult modelBuildingResult;
         Model model;
         try {
-            modelBuildingResult = modelBuilder.build(modelBuildingRequest);
+            modelBuildingResult = modelBuilder.build(modelBuildingRequest.setPomFile(file));
             model = modelBuildingResult.getEffectiveModel();
             try {
                 model.setParent(reader.read(new FileReader(file)).getParent());

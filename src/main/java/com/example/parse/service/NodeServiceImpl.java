@@ -26,15 +26,18 @@ public class NodeServiceImpl implements NodeService {
     private final RepositoriesDto repositoriesDto;
 
     @Override
-    public Node getNodeFromDependency(Dependency dependency) {
-        Artifact artifact = dependency.getArtifact();
-        Node node = buildNode(dependency);
-        Optional<DependencyNode> dependencyNode = getDependencyNodeFromArtifact(artifact);
-        if (dependencyNode.isPresent()) {
-            List<DependencyNode> dependencyNodes = dependencyNode.get().getChildren();
-            node.setChildren(getChildren(dependencyNodes));
+    public Optional<Node> getNodeFromDependency(Dependency dependency) {
+        if (dependency != null) {
+            Artifact artifact = dependency.getArtifact();
+            Node node = buildNode(dependency);
+            Optional<DependencyNode> dependencyNode = getDependencyNodeFromArtifact(artifact);
+            if (dependencyNode.isPresent()) {
+                List<DependencyNode> dependencyNodes = dependencyNode.get().getChildren();
+                node.setChildren(getChildren(dependencyNodes));
+            }
+            return Optional.of(node);
         }
-        return node;
+        return Optional.empty();
     }
 
     private Optional<DependencyNode> getDependencyNodeFromArtifact(Artifact artifact) {
@@ -55,16 +58,16 @@ public class NodeServiceImpl implements NodeService {
             Node node = buildNode(d.getDependency());
             nodes.add(node);
             List<DependencyNode> children = d.getChildren();
-            if(!children.isEmpty()){
+            if (!children.isEmpty()) {
                 node.setChildren(getChildren(children));
-            }else{
+            } else {
                 node.setChildren(new ArrayList<>());
             }
         });
         return nodes;
     }
 
-    private Node buildNode(Dependency dependency){
+    private Node buildNode(Dependency dependency) {
         Artifact artifact = dependency.getArtifact();
         return Node.builder().groupId(artifact.getGroupId())
                 .artifactId(artifact.getArtifactId()).version(artifact.getVersion())

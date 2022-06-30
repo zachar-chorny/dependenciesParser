@@ -10,6 +10,8 @@ import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class ArtifactResolveServiceImpl implements ArtifactResolveService {
@@ -18,15 +20,18 @@ public class ArtifactResolveServiceImpl implements ArtifactResolveService {
     private final RepositoriesDto repositories;
 
     @Override
-    public Artifact resolve(Artifact artifact) {
-        ArtifactRequest artifactRequest = new ArtifactRequest();
-        artifactRequest.setArtifact(artifact);
-        artifactRequest.setRepositories(repositories.getRepositories());
-        try {
-            ArtifactResult artifactResult = repositorySystem.resolveArtifact(session, artifactRequest);
-            return artifactResult.getArtifact();
-        } catch (ArtifactResolutionException e) {
-            return artifact;
+    public Optional<Artifact> resolve(Artifact artifact) {
+        if (artifact != null) {
+            ArtifactRequest artifactRequest = new ArtifactRequest();
+            artifactRequest.setArtifact(artifact);
+            artifactRequest.setRepositories(repositories.getRepositories());
+            try {
+                ArtifactResult artifactResult = repositorySystem.resolveArtifact(session, artifactRequest);
+                return Optional.of(artifactResult.getArtifact());
+            } catch (ArtifactResolutionException e) {
+                return Optional.of(artifact);
+            }
         }
+        return Optional.empty();
     }
 }

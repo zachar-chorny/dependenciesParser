@@ -3,7 +3,9 @@ package com.example.parse.service;
 import com.example.parse.model.Project;
 import com.example.parse.model.ProjectInstruction;
 
+import java.util.Optional;
+
 public interface ProjectResolveService {
 
-     Project createNewProject(Project project, ProjectInstruction instruction);
+     Optional<Project> createNewProject(Project project, ProjectInstruction instruction);
 }
