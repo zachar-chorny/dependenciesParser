@@ -1,12 +1,11 @@
 package com.example.parse.model;
 
-import lombok.Builder;
 import lombok.Data;
-
+import lombok.EqualsAndHashCode;
 import java.util.List;
 
 @Data
-@Builder
+@EqualsAndHashCode
 public class Node {
     private String groupId;
     private String artifactId;
@@ -16,6 +15,14 @@ public class Node {
     private List<Node> children;
 
     public Node() {
+    }
+
+    public Node(String groupId, String artifactId, String version, String type, String scope) {
+        this.groupId = groupId;
+        this.artifactId = artifactId;
+        this.version = version;
+        this.type = type;
+        this.scope = scope;
     }
 
     public Node(String groupId, String artifactId, String version, String type, String scope,

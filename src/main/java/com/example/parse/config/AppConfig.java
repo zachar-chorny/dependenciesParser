@@ -1,6 +1,7 @@
 package com.example.parse.config;
 
 import com.example.parse.model.RepositoriesDto;
+import org.apache.maven.model.building.DefaultModelBuilderFactory;
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -72,8 +73,13 @@ public class AppConfig {
                 .setModelResolver(modelResolver);
     }
 
+    @Bean
+    public DefaultModelBuilderFactory getModelBuilder(){
+        return new DefaultModelBuilderFactory();
+    }
+
     private RemoteRepository getCentralMavenRepository() {
-        return new RemoteRepository.Builder("content", "default", REMOTE_REPOSITORY_URL)
+        return new RemoteRepository.Builder("central", "default", REMOTE_REPOSITORY_URL)
                 .build();
     }
 }

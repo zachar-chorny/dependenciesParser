@@ -1,10 +1,11 @@
 package com.example.parse.model;
 
 import lombok.Data;
-
+import lombok.EqualsAndHashCode;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode
 public class Project {
 
     private String name;

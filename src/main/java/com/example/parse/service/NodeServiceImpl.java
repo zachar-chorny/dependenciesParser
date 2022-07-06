@@ -69,9 +69,7 @@ public class NodeServiceImpl implements NodeService {
 
     private Node buildNode(Dependency dependency) {
         Artifact artifact = dependency.getArtifact();
-        return Node.builder().groupId(artifact.getGroupId())
-                .artifactId(artifact.getArtifactId()).version(artifact.getVersion())
-                .type(artifact.getExtension())
-                .scope(dependency.getScope()).build();
+        return new Node(artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion(),
+                artifact.getExtension(), dependency.getScope());
     }
 }

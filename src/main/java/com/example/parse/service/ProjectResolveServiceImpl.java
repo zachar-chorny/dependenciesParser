@@ -17,15 +17,15 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class ProjectResolveServiceImpl implements ProjectResolveService {
-    private final NodeService nodeService;
+    private final InstructionService instructionService;
 
     @Override
     public Optional<Project> createNewProject(Project project, ProjectInstruction instruction) {
-        if (project != null && instruction != null) {
+        if (project != null) {
             List<Node> nodes = new ArrayList<>(project.getNodes());
-            removeNodes(nodes, instruction.getArtifactIdsForRemoving());
-            replaceNodes(nodes, instruction.getNodesFroReplacing());
-            addNodes(nodes, instruction.getNodesForAdding());
+            nodes = instructionService.removeNodes(nodes, instruction);
+            nodes = instructionService.replaceNodes(nodes, instruction);
+            nodes = instructionService.addNodes(nodes, instruction);
             Project newProject = new Project();
             newProject.setName(project.getName());
             newProject.setNodes(nodes);
@@ -33,43 +33,5 @@ public class ProjectResolveServiceImpl implements ProjectResolveService {
             return Optional.of(newProject);
         }
         return Optional.empty();
-    }
-
-    private void addNodes(List<Node> nodes, List<DependencyNode> dependencyNodes) {
-        if (dependencyNodes != null) {
-            for (DependencyNode dependencyNode : dependencyNodes) {
-                getNode(dependencyNode).ifPresent(nodes::add);
-            }
-        }
-    }
-
-    private void replaceNodes(List<Node> nodes, List<DependencyNode> dependencyNodes) {
-        if (dependencyNodes != null) {
-            for (DependencyNode dependencyNode : dependencyNodes) {
-                for (int i = 0; i < nodes.size(); i++) {
-                    Node node = nodes.get(i);
-                    if (dependencyNode.getArtifactId().equals(node.getArtifactId())) {
-                        Optional<Node> optionalNode = getNode(dependencyNode);
-                        if (optionalNode.isPresent()) {
-                            nodes.set(i, optionalNode.get());
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void removeNodes(List<Node> nodes, List<String> artifactIds) {
-        if (artifactIds != null) {
-            for (String artifactId : artifactIds) {
-                nodes.removeIf(node -> artifactId.equals(node.getArtifactId()));
-            }
-        }
-    }
-
-    private Optional<Node> getNode(DependencyNode dependencyNode) {
-        Artifact artifact = new DefaultArtifact(dependencyNode.getGroupId(), dependencyNode.getArtifactId(),
-                dependencyNode.getType(), dependencyNode.getVersion());
-        return nodeService.getNodeFromDependency(new Dependency(artifact, dependencyNode.getScope()));
     }
 }

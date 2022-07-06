@@ -7,11 +7,7 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode
-public class DependencyNode {
-
-    private String groupId;
-    private String artifactId;
-    private String version;
-    private String type;
-    private String scope;
+public class JsonResponse {
+    private final String message;
+    private final int httpStatus;
 }
