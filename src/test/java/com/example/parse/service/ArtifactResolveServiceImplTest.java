@@ -53,17 +53,13 @@ class ArtifactResolveServiceImplTest {
         ArtifactRequest artifactRequest = new ArtifactRequest();
         artifactRequest.setArtifact(artifact);
         artifactRequest.setRepositories(repositories.getRepositories());
-        Artifact resolvedArtifact = artifact.setFile(new File(""));
+        Artifact resolvedArtifact = artifact.setFile(new File("pom.xml"));
         ArtifactResult artifactResult = new ArtifactResult(artifactRequest);
         artifactResult.setArtifact(resolvedArtifact);
         Mockito.when(repositorySystem.resolveArtifact(any(), any()))
                 .thenReturn(artifactResult);
-        Optional<Artifact> result = artifactResolveService.resolve(artifact);
-        if(result.isPresent()){
-            Assertions.assertNotNull(result.get().getFile());
-        }else {
-            Assertions.fail();
-        }
+        Artifact actualArtifact = artifactResolveService.resolve(artifact);
+        Assertions.assertEquals(resolvedArtifact, actualArtifact);
     }
 
     @SneakyThrows
@@ -76,19 +72,8 @@ class ArtifactResolveServiceImplTest {
         artifactRequest.setArtifact(artifact);
         Mockito.when(repositorySystem.resolveArtifact(any(), any()))
                 .thenThrow(ArtifactResolutionException.class);
-        Optional<Artifact> result = artifactResolveService.resolve(artifact);
-        if(result.isPresent()){
-            Assertions.assertEquals(artifact, result.get());
-        }else {
-            Assertions.fail();
-        }
-    }
-
-    @DisplayName("Test case return empty optional.")
-    @Test
-    void shouldReturnEmptyOptional() {
-        Optional<Artifact> artifact = artifactResolveService.resolve(null);
-        Assertions.assertTrue(artifact.isEmpty());
+        Artifact actualArtifact = artifactResolveService.resolve(artifact);
+        Assertions.assertEquals(artifact, actualArtifact);
     }
 
 }

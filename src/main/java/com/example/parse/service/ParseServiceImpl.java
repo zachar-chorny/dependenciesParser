@@ -24,23 +24,19 @@ public class ParseServiceImpl implements ParseService {
     private final DefaultModelBuilderFactory modelBuilderFactory;
 
     public Optional<Model> getModelFromFile(File file) {
-        if(file != null) {
-            ModelBuilder modelBuilder = modelBuilderFactory.newInstance();
-            ModelBuildingResult modelBuildingResult;
-            Model model;
+        ModelBuilder modelBuilder = modelBuilderFactory.newInstance();
+        ModelBuildingResult modelBuildingResult;
+        Model model;
+        try {
+            modelBuildingResult = modelBuilder.build(modelBuildingRequest.setPomFile(file));
+            model = modelBuildingResult.getEffectiveModel();
             try {
-                modelBuildingResult = modelBuilder.build(modelBuildingRequest.setPomFile(file));
-                model = modelBuildingResult.getEffectiveModel();
-                try {
-                    model.setParent(reader.read(new FileReader(file)).getParent());
-                } catch (XmlPullParserException | IOException ignored) {
-                }
-                return Optional.of(model);
-            } catch (ModelBuildingException e) {
-                return Optional.empty();
+                model.setParent(reader.read(new FileReader(file)).getParent());
+            } catch (XmlPullParserException | IOException ignored) {
             }
+            return Optional.of(model);
+        } catch (ModelBuildingException e) {
+            return Optional.empty();
         }
-        return Optional.empty();
     }
-
 }

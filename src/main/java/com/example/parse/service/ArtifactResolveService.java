@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface ArtifactResolveService {
 
-    Optional<Artifact> resolve(Artifact artifact);
+    Artifact resolve(Artifact artifact);
 }

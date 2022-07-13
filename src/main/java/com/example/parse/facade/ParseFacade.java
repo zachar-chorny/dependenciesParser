@@ -6,12 +6,14 @@ import com.example.parse.service.ParseService;
 import com.example.parse.service.ProjectResolveService;
 import com.example.parse.service.ProjectService;
 import lombok.AllArgsConstructor;
+import org.apache.maven.model.Model;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -22,16 +24,14 @@ public class ParseFacade {
 
     public List<Project> createProjectsFromFile(File file) {
         List<Project> projects = new ArrayList<>();
-        if (file != null) {
-            if (file.isDirectory()) {
-                File[] files = file.listFiles();
-                if (files != null) {
-                    Arrays.stream(files).forEach(f -> projects.addAll(createProjectsFromFile(f)));
-                }
-            } else {
-                parseService.getModelFromFile(file).flatMap(projectService::createProjectFromModel)
-                        .ifPresent(projects::add);
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                Arrays.stream(files).forEach(f -> projects.addAll(createProjectsFromFile(f)));
             }
+        } else {
+            parseService.getModelFromFile(file).ifPresent(model -> projects.add
+                    (projectService.createProjectFromModel(model)));
         }
         return projects;
     }

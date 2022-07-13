@@ -40,7 +40,7 @@ class ParseFacadeTest {
         Project project = new Project();
         project.setName("Parse");
         Mockito.lenient().when(parseService.getModelFromFile(any())).thenReturn(Optional.of(new Model()));
-        Mockito.lenient().when(projectService.createProjectFromModel(any())).thenReturn(Optional.of(project));
+        Mockito.lenient().when(projectService.createProjectFromModel(any())).thenReturn(project);
         Mockito.lenient().when(projectResolveService.createNewProject(any(), any()))
                 .thenReturn(Optional.of(new Project()));
     }
@@ -63,12 +63,5 @@ class ParseFacadeTest {
         instruction.setName("Parse");
         List<Project> projects = parseFacade.createProjectsFromFile(file, List.of(instruction));
         Assertions.assertNotNull(projects.get(0).getNewProject());
-    }
-
-    @DisplayName("Test case return empty list.")
-    @Test
-    void shouldReturnEmptyList() {
-        List<Project> projectsFromNull = parseFacade.createProjectsFromFile(null);
-        Assertions.assertTrue(projectsFromNull.isEmpty());
     }
 }
