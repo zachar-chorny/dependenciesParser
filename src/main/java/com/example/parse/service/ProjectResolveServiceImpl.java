@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -20,18 +21,23 @@ public class ProjectResolveServiceImpl implements ProjectResolveService {
     private final InstructionService instructionService;
 
     @Override
-    public Optional<Project> createNewProject(Project project, ProjectInstruction instruction) {
-        if (project != null) {
-            List<Node> nodes = new ArrayList<>(project.getNodes());
-            nodes = instructionService.removeNodes(nodes, instruction);
-            nodes = instructionService.replaceNodes(nodes, instruction);
-            nodes = instructionService.addNodes(nodes, instruction);
-            Project newProject = new Project();
-            newProject.setName(project.getName());
-            newProject.setNodes(nodes);
-            newProject.setParentNode(project.getParentNode());
-            return Optional.of(newProject);
-        }
-        return Optional.empty();
+    public Project createNewProject(Project project, ProjectInstruction instruction) {
+        List<Node> nodes = new ArrayList<>(project.getNodes());
+        nodes = instructionService.removeNodes(nodes, instruction);
+        nodes = instructionService.replaceNodes(nodes, instruction);
+        nodes = instructionService.addNodes(nodes, instruction);
+        Project newProject = new Project();
+        newProject.setName(project.getName());
+        newProject.setNodes(nodes);
+        newProject.setParentNode(project.getParentNode());
+        return newProject;
+    }
+
+    @Override
+    public Map<String, List<String>> createNewProject(Project project, ProjectInstruction instruction,
+                                                      Map<String, List<String>> changes) {
+        changes = instructionService.removeNodes(project, instruction, changes);
+        changes = instructionService.replaceNodes(project, instruction, changes);
+        return changes;
     }
 }

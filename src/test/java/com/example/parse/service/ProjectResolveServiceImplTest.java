@@ -38,13 +38,9 @@ class ProjectResolveServiceImplTest {
                 .thenReturn(nodes);
         Mockito.when(instructionService.replaceNodes(any(), any()))
                 .thenReturn(nodes);
-        Optional<Project> actualProject = projectResolveService.createNewProject(
+        Project actualProject = projectResolveService.createNewProject(
                 expectedProject, new ProjectInstruction());
-        if (actualProject.isPresent()) {
-            Assertions.assertEquals(expectedProject, actualProject.get());
-        } else {
-            Assertions.fail();
-        }
+        Assertions.assertEquals(expectedProject, actualProject);
     }
 
     private Project createTestProject() {
@@ -55,12 +51,5 @@ class ProjectResolveServiceImplTest {
         project.setNodes(new ArrayList<>(List.of(defaultNode)));
         project.setParentNode(new ParentNode());
         return project;
-    }
-
-    @DisplayName("Test case return empty optional.")
-    @Test
-    void shouldReturnEmptyOptional() {
-        Optional<Project> project = projectResolveService.createNewProject(null, new ProjectInstruction());
-        Assertions.assertTrue(project.isEmpty());
     }
 }

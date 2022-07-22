@@ -42,7 +42,7 @@ class ParseFacadeTest {
         Mockito.lenient().when(parseService.getModelFromFile(any())).thenReturn(Optional.of(new Model()));
         Mockito.lenient().when(projectService.createProjectFromModel(any())).thenReturn(project);
         Mockito.lenient().when(projectResolveService.createNewProject(any(), any()))
-                .thenReturn(Optional.of(new Project()));
+                .thenReturn(new Project());
     }
 
     @DisplayName("Test case return list with few projects.")

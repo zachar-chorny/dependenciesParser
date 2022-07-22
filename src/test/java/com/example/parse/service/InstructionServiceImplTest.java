@@ -64,29 +64,6 @@ class InstructionServiceImplTest {
         Assertions.assertFalse(result.contains(nodeForRemove));
     }
 
-    @DisplayName("Test case return list without changes.")
-    @Test
-    void shouldReturnListWithoutChanges(){
-        List<Node> nodes = new ArrayList<>(createTestNodes());
-        List<Node> resultAfterAdding = instructionService.addNodes(nodes, null);
-        List<Node> resultAfterReplacing = instructionService.replaceNodes(nodes, null);
-        List<Node> resultAfterRemoving = instructionService.removeNodes(nodes, null);
-        Assertions.assertEquals(nodes, resultAfterRemoving);
-        Assertions.assertEquals(nodes, resultAfterAdding);
-        Assertions.assertEquals(nodes, resultAfterReplacing);
-
-        ProjectInstruction emptyInstruction = new ProjectInstruction();
-        emptyInstruction.setArtifactIdsForRemoving(null);
-        emptyInstruction.setNodesFroReplacing(null);
-        emptyInstruction.setNodesForAdding(null);
-        resultAfterAdding = instructionService.addNodes(nodes, emptyInstruction);
-        resultAfterReplacing = instructionService.replaceNodes(nodes, emptyInstruction);
-        resultAfterRemoving = instructionService.removeNodes(nodes, emptyInstruction);
-        Assertions.assertEquals(nodes, resultAfterRemoving);
-        Assertions.assertEquals(nodes, resultAfterAdding);
-        Assertions.assertEquals(nodes, resultAfterReplacing);
-    }
-
     private ProjectInstruction createTestInstruction(){
         ProjectInstruction projectInstruction = new ProjectInstruction();
         DependencyNode nodeForAdd = new DependencyNode("add", "add", "add",
