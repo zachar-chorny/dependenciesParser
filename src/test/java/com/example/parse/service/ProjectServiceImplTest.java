@@ -40,12 +40,8 @@ class ProjectServiceImplTest {
     void shouldReturnCorrectProject() {
         setup();
         Model expectedModel = createTestModel();
-        Optional<Project> project = projectService.createProjectFromModel(expectedModel);
-        if(project.isPresent()){
-            Assertions.assertTrue(isCorrect(expectedModel, project.get()));
-        }else {
-            Assertions.fail();
-        }
+        Project project = projectService.createProjectFromModel(expectedModel);
+        Assertions.assertTrue(isCorrect(expectedModel, project));
     }
 
     void setup(){
@@ -58,8 +54,8 @@ class ProjectServiceImplTest {
         model.setName("spring-boot-starter-parent");
         Artifact artifact = new DefaultArtifact(null, null, null, null);
         Mockito.lenient().when(parseService.getModelFromFile(any())).thenReturn(Optional.of(model));
-        Mockito.lenient().when(artifactResolver.resolve(any())).thenReturn(Optional.of(artifact));
-        Mockito.lenient().when(nodeService.getNodeFromDependency(any())).thenReturn(Optional.of(new Node()));
+        Mockito.lenient().when(artifactResolver.resolve(any())).thenReturn(artifact);
+        Mockito.lenient().when(nodeService.getNodeFromDependency(any())).thenReturn(new Node());
     }
 
     private Model createTestModel() {
@@ -73,13 +69,6 @@ class ProjectServiceImplTest {
         model.setParent(new Parent());
         model.setDependencies(new ArrayList<>(List.of(new Dependency(), new Dependency(), new Dependency())));
         return model;
-    }
-
-    @DisplayName("Test case return empty optional.")
-    @Test
-    void shouldReturnEmptyOptional(){
-        Optional<Project> project = projectService.createProjectFromModel(null);
-        Assertions.assertTrue(project.isEmpty());
     }
 
     private boolean isCorrect(Model model, Project project) {

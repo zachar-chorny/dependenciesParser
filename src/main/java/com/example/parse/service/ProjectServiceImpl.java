@@ -32,22 +32,19 @@ public class ProjectServiceImpl implements ProjectService {
     private final NodeService nodeService;
 
     @Override
-    public Optional<Project> createProjectFromModel(Model model) {
-        if (model != null) {
+    public Project createProjectFromModel(Model model) {
             Project project = new Project();
             project.setName(model.getArtifactId());
             project.setParentNode(createParent(model));
             project.setNodes(createNodes(model));
-            return Optional.of(project);
-        }
-        return Optional.empty();
+            return project;
     }
 
     private List<Node> createNodes(Model model) {
         List<Node> nodes = new ArrayList<>();
         List<Dependency> dependencies = getDependenciesFromModel(model);
         for (Dependency dependency : dependencies) {
-            nodeService.getNodeFromDependency(dependency).ifPresent(nodes::add);
+            nodes.add(nodeService.getNodeFromDependency(dependency));
         }
         return nodes;
     }
@@ -56,18 +53,15 @@ public class ProjectServiceImpl implements ProjectService {
         Parent parent = model.getParent();
         if (parent != null) {
             ParentNode parentNode = new ParentNode();
-            Optional<Artifact> optionalArtifact = artifactResolver.resolve(getArtifactFromParent(parent));
-            if (optionalArtifact.isPresent()) {
-                Artifact artifact = optionalArtifact.get();
-                nodeService.getNodeFromDependency(new Dependency(artifact, null))
-                        .ifPresent(parentNode::setUp);
+                Artifact artifact = artifactResolver.resolve(getArtifactFromParent(parent));
+                parentNode.setUp(nodeService.getNodeFromDependency
+                        (new Dependency(artifact, null)));
                 File file = artifact.getFile();
                 if (file != null) {
                     parseService.getModelFromFile(file).ifPresent(m -> parentNode.setParentNode(createParent(m)));
                 }
                 return parentNode;
             }
-        }
         return null;
     }
 

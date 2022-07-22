@@ -26,7 +26,7 @@ public class InstructionServiceImpl implements InstructionService {
             List<DependencyNode> dependencyNodes = instruction.getNodesForAdding();
             if (dependencyNodes != null) {
                 for (DependencyNode dependencyNode : dependencyNodes) {
-                    getNode(dependencyNode).ifPresent(changedNodes::add);
+                    changedNodes.add(getNode(dependencyNode));
                 }
             }
             return changedNodes;
@@ -45,10 +45,7 @@ public class InstructionServiceImpl implements InstructionService {
                         Node node = changedNodes.get(i);
                         if (dependencyNode.getGroupId().equals(node.getGroupId()) &&
                                 dependencyNode.getArtifactId().equals(node.getArtifactId())) {
-                            Optional<Node> optionalNode = getNode(dependencyNode);
-                            if (optionalNode.isPresent()) {
-                                changedNodes.set(i, optionalNode.get());
-                            }
+                            changedNodes.set(i, getNode(dependencyNode));
                         }
                     }
                 }
@@ -61,7 +58,7 @@ public class InstructionServiceImpl implements InstructionService {
     @Override
     public List<Node> removeNodes(List<Node> nodes, ProjectInstruction instruction) {
         List<Node> changedNodes = new ArrayList<>(nodes);
-        if(instruction != null) {
+        if (instruction != null) {
             List<String> artifactIds = instruction.getArtifactIdsForRemoving();
             if (artifactIds != null) {
                 for (String artifactId : artifactIds) {
@@ -73,7 +70,7 @@ public class InstructionServiceImpl implements InstructionService {
         return nodes;
     }
 
-    private Optional<Node> getNode(DependencyNode dependencyNode) {
+    private Node getNode(DependencyNode dependencyNode) {
         Artifact artifact = new DefaultArtifact(dependencyNode.getGroupId(), dependencyNode.getArtifactId(), dependencyNode.getType(), dependencyNode.getVersion());
         return nodeService.getNodeFromDependency(new Dependency(artifact, dependencyNode.getScope()));
     }

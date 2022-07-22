@@ -26,18 +26,16 @@ public class NodeServiceImpl implements NodeService {
     private final RepositoriesDto repositoriesDto;
 
     @Override
-    public Optional<Node> getNodeFromDependency(Dependency dependency) {
-        if (dependency != null) {
-            Artifact artifact = dependency.getArtifact();
-            Node node = buildNode(dependency);
-            Optional<DependencyNode> dependencyNode = getDependencyNodeFromArtifact(artifact);
-            if (dependencyNode.isPresent()) {
-                List<DependencyNode> dependencyNodes = dependencyNode.get().getChildren();
-                node.setChildren(getChildren(dependencyNodes));
-            }
-            return Optional.of(node);
+    public Node getNodeFromDependency(Dependency dependency) {
+        Artifact artifact = dependency.getArtifact();
+        Node node = buildNode(dependency);
+        Optional<DependencyNode> dependencyNode = getDependencyNodeFromArtifact(artifact);
+        if (dependencyNode.isPresent()) {
+            List<DependencyNode> dependencyNodes = dependencyNode.get().getChildren();
+            node.setChildren(getChildren(dependencyNodes));
         }
-        return Optional.empty();
+        return node;
+
     }
 
     private Optional<DependencyNode> getDependencyNodeFromArtifact(Artifact artifact) {

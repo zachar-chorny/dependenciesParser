@@ -20,18 +20,15 @@ public class ArtifactResolveServiceImpl implements ArtifactResolveService {
     private final RepositoriesDto repositories;
 
     @Override
-    public Optional<Artifact> resolve(Artifact artifact) {
-        if (artifact != null) {
-            ArtifactRequest artifactRequest = new ArtifactRequest();
-            artifactRequest.setArtifact(artifact);
-            artifactRequest.setRepositories(repositories.getRepositories());
-            try {
-                ArtifactResult artifactResult = repositorySystem.resolveArtifact(session, artifactRequest);
-                return Optional.of(artifactResult.getArtifact());
-            } catch (ArtifactResolutionException e) {
-                return Optional.of(artifact);
-            }
+    public Artifact resolve(Artifact artifact) {
+        ArtifactRequest artifactRequest = new ArtifactRequest();
+        artifactRequest.setArtifact(artifact);
+        artifactRequest.setRepositories(repositories.getRepositories());
+        try {
+            ArtifactResult artifactResult = repositorySystem.resolveArtifact(session, artifactRequest);
+            return artifactResult.getArtifact();
+        } catch (ArtifactResolutionException e) {
+            return artifact;
         }
-        return Optional.empty();
     }
 }

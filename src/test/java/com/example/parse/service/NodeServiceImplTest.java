@@ -50,7 +50,7 @@ class NodeServiceImplTest {
     @SneakyThrows
     @DisplayName("Test case return correct node.")
     @Test
-    void shouldReturnCorrectNode(){
+    void shouldReturnCorrectNode() {
         CollectResult collectResult = createTestCollectResult();
         Artifact finalArtifact = new DefaultArtifact("final", "final", "final", "final");
         Dependency finalDependency = new Dependency(finalArtifact, "final");
@@ -58,28 +58,17 @@ class NodeServiceImplTest {
         Mockito.when(repositorySystem.collectDependencies(any(), any())).thenReturn(collectResult);
         Mockito.lenient().when(repositorySystem.collectDependencies(any(), eq(collectRequest)))
                 .thenReturn(null);
-        Optional<Node> optionalNode = nodeService.getNodeFromDependency(collectResult.getRoot().getDependency());
-        if(optionalNode.isPresent()){
-            Assertions.assertTrue(isCorrect(collectResult.getRoot(), optionalNode.get()));
-        }else {
-            Assertions.fail();
-        }
-    }
-
-    @DisplayName("Test case return empty optional.")
-    @Test
-    void shouldReturnEmptyOptional(){
-        Optional<Node> optionalNode = nodeService.getNodeFromDependency(null);
-        Assertions.assertTrue(optionalNode.isEmpty());
+        Node node = nodeService.getNodeFromDependency(collectResult.getRoot().getDependency());
+        Assertions.assertTrue(isCorrect(collectResult.getRoot(), node));
     }
 
     private boolean isCorrect(DependencyNode root, Node node) {
-        if(isSame(root, node)){
+        if (isSame(root, node)) {
             List<DependencyNode> dependencyNodes = root.getChildren();
             List<Node> nodes = node.getChildren();
-            if(dependencyNodes != null && nodes != null){
-                if(dependencyNodes.size() == nodes.size()){
-                    for(int i = 0; i < nodes.size(); i++){
+            if (dependencyNodes != null && nodes != null) {
+                if (dependencyNodes.size() == nodes.size()) {
+                    for (int i = 0; i < nodes.size(); i++) {
                         isCorrect(dependencyNodes.get(i), nodes.get(i));
                     }
                 } else {

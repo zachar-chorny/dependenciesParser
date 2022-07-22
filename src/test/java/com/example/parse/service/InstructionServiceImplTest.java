@@ -34,7 +34,7 @@ class InstructionServiceImplTest {
         ProjectInstruction instruction = createTestInstruction();
         Node nodeForAdd = new Node("add", "add", "add",
                 "add", "add");
-        Mockito.when(nodeService.getNodeFromDependency(any())).thenReturn(Optional.of(nodeForAdd));
+        Mockito.when(nodeService.getNodeFromDependency(any())).thenReturn(nodeForAdd);
         List<Node> result = instructionService.addNodes(nodes, instruction);
         Assertions.assertTrue(result.contains(nodeForAdd));
     }
@@ -48,7 +48,7 @@ class InstructionServiceImplTest {
                 "replaced", "replaced");
         Node oldNode = new Node("default", "default", "default",
                 "default", "default");
-        Mockito.when(nodeService.getNodeFromDependency(any())).thenReturn(Optional.of(nodeForReplace));
+        Mockito.when(nodeService.getNodeFromDependency(any())).thenReturn(nodeForReplace);
         List<Node> result = instructionService.replaceNodes(nodes, instruction);
         Assertions.assertTrue(result.contains(nodeForReplace));
         Assertions.assertFalse(result.contains(oldNode));
