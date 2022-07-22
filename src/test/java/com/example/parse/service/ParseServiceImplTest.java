@@ -34,8 +34,6 @@ class ParseServiceImplTest {
     @Mock
     private MavenXpp3Reader reader;
     @Mock
-    private ModelBuildingRequest modelBuildingRequest;
-    @Mock
     private DefaultModelBuilderFactory modelBuilderFactory;
 
     @SneakyThrows

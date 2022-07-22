@@ -67,13 +67,6 @@ public class AppConfig {
     }
 
     @Bean
-    public ModelBuildingRequest getModelBuildingRequest(ModelResolver modelResolver) {
-        return new DefaultModelBuildingRequest()
-                .setProcessPlugins(false).setSystemProperties(System.getProperties())
-                .setModelResolver(modelResolver);
-    }
-
-    @Bean
     public DefaultModelBuilderFactory getModelBuilder(){
         return new DefaultModelBuilderFactory();
     }
