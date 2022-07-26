@@ -2,6 +2,7 @@ package com.example.parse.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
 import java.util.List;
 
 @Data
@@ -12,4 +13,14 @@ public class Project {
     private List<Node> nodes;
     private ParentNode parentNode;
     private Project newProject;
+
+    public Project() {
+
+    }
+
+    public Project(String name, List<Node> nodes, ParentNode parentNode) {
+        this.name = name;
+        this.nodes = nodes;
+        this.parentNode = parentNode;
+    }
 }

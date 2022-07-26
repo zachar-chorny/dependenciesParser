@@ -14,7 +14,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -41,6 +43,20 @@ class ProjectResolveServiceImplTest {
         Project actualProject = projectResolveService.createNewProject(
                 expectedProject, new ProjectInstruction());
         Assertions.assertEquals(expectedProject, actualProject);
+    }
+
+    @DisplayName("Test case return correct project.")
+    @Test
+    void shouldReturnCorrectMap() {
+        Map<String, List<String>> expectedMap = Map.of("1", List.of("Parse"),
+                "2", List.of("Parse"), "3", List.of("Parse"));
+        Mockito.when(instructionService.removeNodes(any(), any(), any()))
+                .thenReturn(expectedMap);
+        Mockito.when(instructionService.replaceNodes(any(), any(), any()))
+                .thenReturn(expectedMap);
+        Map<String, List<String>> actualMap = projectResolveService.createNewProject(new Project(),
+                new ProjectInstruction(), new HashMap<>());
+        Assertions.assertEquals(expectedMap, actualMap);
     }
 
     private Project createTestProject() {

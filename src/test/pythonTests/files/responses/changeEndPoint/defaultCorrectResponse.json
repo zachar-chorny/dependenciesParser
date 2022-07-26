@@ -1,0 +1,14 @@
+{
+    "common-logging-api": [
+        "apicem-installers-parent",
+        "plugin-type-api",
+        "test-installers-parent",
+        "model-installer-test-parent"
+    ],
+    "common-logging-core": [
+        "apicem-installers-parent",
+        "plugin-type-api",
+        "test-installers-parent",
+        "model-installer-test-parent"
+    ]
+}

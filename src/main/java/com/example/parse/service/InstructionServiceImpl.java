@@ -51,13 +51,15 @@ public class InstructionServiceImpl implements InstructionService {
     }
 
     @Override
-    public Map<String, List<String>> replaceNodes(Project project, ProjectInstruction instruction, Map<String, List<String>> changes) {
+    public Map<String, List<String>> replaceNodes(Project project, ProjectInstruction instruction,
+                                                  Map<String, List<String>> changes) {
         List<Node> changedNodes = new ArrayList<>(project.getNodes());
         List<DependencyNode> dependencyNodes = instruction.getNodesFroReplacing();
         if (dependencyNodes != null) {
             for (DependencyNode dependencyNode : dependencyNodes) {
                 for (Node node : changedNodes) {
-                    if (dependencyNode.getGroupId().equals(node.getGroupId()) && dependencyNode.getArtifactId().equals(node.getArtifactId())) {
+                    if (dependencyNode.getGroupId().equals(node.getGroupId())
+                            && dependencyNode.getArtifactId().equals(node.getArtifactId())) {
                         String artifactId = dependencyNode.getArtifactId();
                         if (changes.containsKey(artifactId)) {
                             changes.get(artifactId).add(project.getName());
@@ -84,7 +86,8 @@ public class InstructionServiceImpl implements InstructionService {
     }
 
     @Override
-    public Map<String, List<String>> removeNodes(Project project, ProjectInstruction instruction, Map<String, List<String>> changes) {
+    public Map<String, List<String>> removeNodes(Project project, ProjectInstruction instruction,
+                                                 Map<String, List<String>> changes) {
         List<Node> changedNodes = new ArrayList<>(project.getNodes());
         List<String> artifactIds = instruction.getArtifactIdsForRemoving();
         if (artifactIds != null) {

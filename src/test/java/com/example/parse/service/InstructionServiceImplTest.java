@@ -14,7 +14,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,6 +65,52 @@ class InstructionServiceImplTest {
         List<Node> result = instructionService.removeNodes(nodes, instruction);
         Assertions.assertFalse(result.contains(nodeForRemove));
     }
+
+    @DisplayName("Test case return correct map with removed nodes.")
+    @Test
+    void shouldReturnCorrectMapWithRemovedNodes() {
+        Project project = createTestProject();
+        ProjectInstruction instruction = createTestInstructionForChange();
+        Map<String, List<String>> expectedMap = Map.of("1", List.of("Parse"),
+                "2", List.of("Parse"), "3", List.of("Parse"));
+        Map<String, List<String>> actualMap = instructionService.removeNodes(project, instruction,
+                new HashMap<>());
+        Assertions.assertEquals(expectedMap, actualMap);
+    }
+
+    @DisplayName("Test case return correct map with replaced nodes.")
+    @Test
+    void shouldReturnCorrectMapWithReplacedNodes() {
+        Project project = createTestProject();
+        ProjectInstruction instruction = createTestInstructionForChange();
+        Map<String, List<String>> expectedMap = Map.of("1", List.of("Parse"),
+                "2", List.of("Parse"), "3", List.of("Parse"));
+        Map<String, List<String>> actualMap = instructionService.replaceNodes(project, instruction,
+                new HashMap<>());
+        Assertions.assertEquals(expectedMap, actualMap);
+    }
+
+    private ProjectInstruction createTestInstructionForChange() {
+        ProjectInstruction projectInstruction = new ProjectInstruction();
+        projectInstruction.setNodesFroReplacing(List.of(
+                new DependencyNode("default", "1", "default", "default", "default"),
+                new DependencyNode("default", "2", "default", "default", "default"),
+                new DependencyNode("default", "3", "default", "default", "default")));
+        projectInstruction.setArtifactIdsForRemoving(List.of("1", "2", "3"));
+        return projectInstruction;
+    }
+
+    private Project createTestProject() {
+        Project project = new Project();
+        project.setName("Parse");
+        List<Node> nodes = List.of(
+                new Node("default", "1", "default", "default", "default"),
+                new Node("default", "2", "default", "default", "default"),
+                new Node("default", "3", "default", "default", "default"));
+        project.setNodes(nodes);
+        return project;
+    }
+
 
     private ProjectInstruction createTestInstruction(){
         ProjectInstruction projectInstruction = new ProjectInstruction();
