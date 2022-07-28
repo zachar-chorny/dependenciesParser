@@ -22,22 +22,22 @@ public class ParseFacade {
     private final ProjectService projectService;
     private final ProjectResolveService projectResolveService;
 
-    public List<Project> createProjectsFromFile(File file) {
+    public List<Project> createProjectsFromFile(File file, boolean resolveDependencies) {
         List<Project> projects = new ArrayList<>();
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
-                Arrays.stream(files).forEach(f -> projects.addAll(createProjectsFromFile(f)));
+                Arrays.stream(files).forEach(f -> projects.addAll(createProjectsFromFile(f, resolveDependencies)));
             }
         } else {
             parseService.getModelFromFile(file).ifPresent(model -> projects.add
-                    (projectService.createProjectFromModel(model)));
+                    (projectService.createProjectFromModel(model, resolveDependencies)));
         }
         return projects;
     }
 
     public List<Project> createProjectsFromFile(File file, List<ProjectInstruction> instructions) {
-        List<Project> projects = createProjectsFromFile(file);
+        List<Project> projects = createProjectsFromFile(file, true);
         for (ProjectInstruction instruction : instructions) {
             for (Project project : projects) {
                 if (instruction.getName().equals(project.getName())) {

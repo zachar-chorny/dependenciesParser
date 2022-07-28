@@ -109,6 +109,6 @@ public class InstructionServiceImpl implements InstructionService {
     private Node getNode(DependencyNode dependencyNode) {
         Artifact artifact = new DefaultArtifact(dependencyNode.getGroupId(), dependencyNode.getArtifactId(),
                 dependencyNode.getType(), dependencyNode.getVersion());
-        return nodeService.getNodeFromDependency(new Dependency(artifact, dependencyNode.getScope()));
+        return nodeService.getNodeFromDependency(new Dependency(artifact, dependencyNode.getScope()), false);
     }
 }

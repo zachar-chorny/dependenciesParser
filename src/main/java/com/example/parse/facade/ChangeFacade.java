@@ -20,7 +20,7 @@ public class ChangeFacade {
     private final ProjectResolveService projectResolveService;
 
     public Map<String, List<String>> getFutureChanges(File file, List<ProjectInstruction> instructions) {
-        List<Project> projects = parseFacade.createProjectsFromFile(file);
+        List<Project> projects = parseFacade.createProjectsFromFile(file, false);
         Map<String, List<String>> changes = new HashMap<>();
         for (ProjectInstruction instruction : instructions) {
             List<Project> childProjects = getChildProjects(instruction.getName(), projects);

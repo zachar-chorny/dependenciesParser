@@ -32,33 +32,34 @@ public class ProjectServiceImpl implements ProjectService {
     private final NodeService nodeService;
 
     @Override
-    public Project createProjectFromModel(Model model) {
+    public Project createProjectFromModel(Model model, boolean resolveDependencies) {
             Project project = new Project();
             project.setName(model.getArtifactId());
-            project.setParentNode(createParent(model));
-            project.setNodes(createNodes(model));
+            project.setParentNode(createParent(model, resolveDependencies));
+            project.setNodes(createNodes(model, resolveDependencies));
             return project;
     }
 
-    private List<Node> createNodes(Model model) {
+    private List<Node> createNodes(Model model, boolean resolveDependencies) {
         List<Node> nodes = new ArrayList<>();
         List<Dependency> dependencies = getDependenciesFromModel(model);
         for (Dependency dependency : dependencies) {
-            nodes.add(nodeService.getNodeFromDependency(dependency));
+            nodes.add(nodeService.getNodeFromDependency(dependency, resolveDependencies));
         }
         return nodes;
     }
 
-    private ParentNode createParent(Model model) {
+    private ParentNode createParent(Model model, boolean resolveDependencies) {
         Parent parent = model.getParent();
         if (parent != null) {
             ParentNode parentNode = new ParentNode();
                 Artifact artifact = artifactResolver.resolve(getArtifactFromParent(parent));
                 parentNode.setUp(nodeService.getNodeFromDependency
-                        (new Dependency(artifact, null)));
+                        (new Dependency(artifact, null), resolveDependencies));
                 File file = artifact.getFile();
                 if (file != null) {
-                    parseService.getModelFromFile(file).ifPresent(m -> parentNode.setParentNode(createParent(m)));
+                    parseService.getModelFromFile(file).ifPresent(m -> parentNode.setParentNode(
+                            createParent(m, resolveDependencies)));
                 }
                 return parentNode;
             }

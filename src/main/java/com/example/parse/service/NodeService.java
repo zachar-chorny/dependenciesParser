@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface NodeService {
 
-    Node getNodeFromDependency(Dependency dependency);
+    Node getNodeFromDependency(Dependency dependency, boolean resolveDependencies);
 }

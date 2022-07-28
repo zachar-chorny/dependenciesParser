@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface ProjectService {
 
-    Project createProjectFromModel(Model model);
+    Project createProjectFromModel(Model model, boolean resolveDependencies);
 }

@@ -58,7 +58,7 @@ class NodeServiceImplTest {
         Mockito.when(repositorySystem.collectDependencies(any(), any())).thenReturn(collectResult);
         Mockito.lenient().when(repositorySystem.collectDependencies(any(), eq(collectRequest)))
                 .thenReturn(null);
-        Node node = nodeService.getNodeFromDependency(collectResult.getRoot().getDependency());
+        Node node = nodeService.getNodeFromDependency(collectResult.getRoot().getDependency(), true);
         Assertions.assertTrue(isCorrect(collectResult.getRoot(), node));
     }
 

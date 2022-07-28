@@ -46,7 +46,7 @@ public class ParseController {
         if (instructions != null) {
             return parseFacade.createProjectsFromFile(file, instructions);
         }
-        return parseFacade.createProjectsFromFile(file);
+        return parseFacade.createProjectsFromFile(file, true);
     }
 
 }
