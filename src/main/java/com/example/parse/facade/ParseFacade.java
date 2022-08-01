@@ -1,6 +1,6 @@
 package com.example.parse.facade;
 
-import com.example.parse.model.CallableTask;
+import com.example.parse.model.CallableProjectTask;
 import com.example.parse.model.Project;
 import com.example.parse.model.ProjectInstruction;
 import com.example.parse.service.ParseService;
@@ -35,10 +35,10 @@ public class ParseFacade {
 
     private List<Project> getProjectsFromFiles(List<File> files, boolean resolveDependencies) {
         List<Project> projects = new ArrayList<>();
-        ExecutorService executorService = Executors.newFixedThreadPool(25);
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
         List<Future<Optional<Project>>> futures = new ArrayList<>();
         for (File iterFile : files) {
-            futures.add(executorService.submit(new CallableTask(parseService, projectService, iterFile,
+            futures.add(executorService.submit(new CallableProjectTask(parseService, projectService, iterFile,
                     resolveDependencies)));
         }
         executorService.shutdown();
@@ -59,7 +59,7 @@ public class ParseFacade {
                 Arrays.stream(files).forEach(f -> fileList.addAll(getFiles(f)));
             }
         } else {
-            if(file.getName().equals("pom.xml")){
+            if(file.getName().equals("pom.xml") || file.getName().equals("bom.xml")){
                 fileList.add(file);
             }
         }

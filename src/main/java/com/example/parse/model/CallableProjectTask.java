@@ -8,13 +8,13 @@ import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-public class CallableTask implements Callable<Optional<Project>> {
+public class CallableProjectTask implements Callable<Optional<Project>> {
     private final ParseService parseService;
     private final ProjectService projectService;
     private final File file;
     private final boolean resolveDependencies;
 
-    public CallableTask(ParseService parseService, ProjectService projectService, File file,
+    public CallableProjectTask(ParseService parseService, ProjectService projectService, File file,
                         boolean resolveDependencies){
         this.parseService = parseService;
         this.projectService = projectService;

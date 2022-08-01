@@ -1,5 +1,6 @@
 package com.example.parse.service;
 
+import com.example.parse.model.CallableNodeTask;
 import com.example.parse.model.Node;
 import com.example.parse.model.ParentNode;
 import com.example.parse.model.Project;
@@ -23,6 +24,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Service
 @AllArgsConstructor
@@ -31,38 +36,36 @@ public class ProjectServiceImpl implements ProjectService {
     private final ArtifactResolveService artifactResolver;
     private final NodeService nodeService;
 
+    private final NodeResolveService nodeResolveService;
+
     @Override
     public Project createProjectFromModel(Model model, boolean resolveDependencies) {
-            Project project = new Project();
-            project.setName(model.getArtifactId());
-            project.setParentNode(createParent(model, resolveDependencies));
-            project.setNodes(createNodes(model, resolveDependencies));
-            return project;
+        Project project = new Project();
+        project.setName(model.getArtifactId());
+        project.setParentNode(createParent(model, resolveDependencies));
+        project.setNodes(createNodes(model, resolveDependencies));
+        return project;
     }
 
     private List<Node> createNodes(Model model, boolean resolveDependencies) {
-        List<Node> nodes = new ArrayList<>();
         List<Dependency> dependencies = getDependenciesFromModel(model);
-        for (Dependency dependency : dependencies) {
-            nodes.add(nodeService.getNodeFromDependency(dependency, resolveDependencies));
-        }
-        return nodes;
+        return nodeResolveService.getNodes(dependencies, resolveDependencies);
     }
 
     private ParentNode createParent(Model model, boolean resolveDependencies) {
         Parent parent = model.getParent();
         if (parent != null) {
             ParentNode parentNode = new ParentNode();
-                Artifact artifact = artifactResolver.resolve(getArtifactFromParent(parent));
-                parentNode.setUp(nodeService.getNodeFromDependency
-                        (new Dependency(artifact, null), resolveDependencies));
-                File file = artifact.getFile();
-                if (file != null) {
-                    parseService.getModelFromFile(file).ifPresent(m -> parentNode.setParentNode(
-                            createParent(m, resolveDependencies)));
-                }
-                return parentNode;
+            Artifact artifact = artifactResolver.resolve(getArtifactFromParent(parent));
+            parentNode.setUp(nodeService.getNodeFromDependency
+                    (new Dependency(artifact, null), resolveDependencies));
+            File file = artifact.getFile();
+            if (file != null) {
+                parseService.getModelFromFile(file).ifPresent(m -> parentNode.setParentNode(
+                        createParent(m, resolveDependencies)));
             }
+            return parentNode;
+        }
         return null;
     }
 
