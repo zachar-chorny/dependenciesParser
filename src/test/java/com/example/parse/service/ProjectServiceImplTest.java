@@ -2,6 +2,7 @@ package com.example.parse.service;
 
 import com.example.parse.model.Node;
 import com.example.parse.model.Project;
+import com.example.parse.service.impl.ProjectServiceImpl;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,11 +1,14 @@
 package com.example.parse.facade;
 
+import com.example.parse.facade.impl.DefaultChangeFacade;
+import com.example.parse.facade.impl.DefaultParseFacade;
 import com.example.parse.model.DependencyNode;
 import com.example.parse.model.Node;
 import com.example.parse.model.ParentNode;
 import com.example.parse.model.Project;
 import com.example.parse.model.ProjectInstruction;
 import com.example.parse.service.ProjectResolveService;
+import com.example.parse.service.impl.ProjectResolveServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +34,7 @@ class ChangeFacadeTest {
     @Mock
     private ProjectResolveService projectResolveService;
     @InjectMocks
-    private ChangeFacade changeFacade;
+    private DefaultChangeFacade changeFacade;
 
     @DisplayName("Test case return correct map.")
     @Test
@@ -45,7 +47,7 @@ class ChangeFacadeTest {
         List<ProjectInstruction> projectInstructions = List.of(projectInstruction);
         List<Project> projects = createTestProjects();
         Map<String, List<String>> expectedMap = createTestMap();
-        Mockito.when(parseFacade.createProjectsFromFile(any())).thenReturn(projects);
+        Mockito.when(parseFacade.createProjectsFromFile(any(), any())).thenReturn(projects);
         Mockito.when(projectResolveService.createNewProject(any(), any(), any())).thenReturn(expectedMap);
         Map<String, List<String>> actualMap = changeFacade.getFutureChanges(
                 new File("path"), projectInstructions);

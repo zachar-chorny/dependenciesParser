@@ -2,6 +2,7 @@ package com.example.parse.service;
 
 import com.example.parse.model.Node;
 import com.example.parse.model.RepositoriesDto;
+import com.example.parse.service.impl.NodeServiceImpl;
 import lombok.SneakyThrows;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.Artifact;
@@ -23,9 +24,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 

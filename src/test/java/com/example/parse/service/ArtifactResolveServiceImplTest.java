@@ -1,9 +1,9 @@
 package com.example.parse.service;
 
 import com.example.parse.model.RepositoriesDto;
+import com.example.parse.service.impl.ArtifactResolveServiceImpl;
 import lombok.SneakyThrows;
 import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 

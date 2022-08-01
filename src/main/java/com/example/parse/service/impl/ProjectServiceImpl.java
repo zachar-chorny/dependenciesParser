@@ -1,9 +1,13 @@
-package com.example.parse.service;
+package com.example.parse.service.impl;
 
 import com.example.parse.model.Node;
 import com.example.parse.model.ParentNode;
 import com.example.parse.model.Project;
 import com.example.parse.model.RepositoriesDto;
+import com.example.parse.service.ArtifactResolveService;
+import com.example.parse.service.NodeService;
+import com.example.parse.service.ParseService;
+import com.example.parse.service.ProjectService;
 import lombok.AllArgsConstructor;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;

@@ -1,7 +1,8 @@
-package com.example.parse.service;
+package com.example.parse.service.impl;
 
 import com.example.parse.model.Node;
 import com.example.parse.model.RepositoriesDto;
+import com.example.parse.service.NodeService;
 import lombok.AllArgsConstructor;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;

@@ -1,5 +1,6 @@
-package com.example.parse.service;
+package com.example.parse.service.impl;
 
+import com.example.parse.service.ParseService;
 import lombok.AllArgsConstructor;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.building.DefaultModelBuilderFactory;

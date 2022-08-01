@@ -1,10 +1,12 @@
 package com.example.parse.facade;
 
+import com.example.parse.facade.impl.DefaultParseFacade;
 import com.example.parse.model.Project;
 import com.example.parse.model.ProjectInstruction;
 import com.example.parse.service.ParseService;
 import com.example.parse.service.ProjectResolveService;
 import com.example.parse.service.ProjectService;
+import com.example.parse.service.impl.ProjectServiceImpl;
 import org.apache.maven.model.Model;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +59,7 @@ class ParseFacadeTest {
     @DisplayName("Test case return project with new project.")
     @Test
     void shouldReturnProjectWithNewProject() {
-        String path = "src/test/resources/files/one.xml";
+        String path = "src/test/resources/files/one/pom.xml";
         File file = Paths.get("", path).toAbsolutePath().toFile();
         ProjectInstruction instruction = new ProjectInstruction();
         instruction.setName("Parse");

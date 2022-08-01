@@ -1,9 +1,11 @@
-package com.example.parse.service;
+package com.example.parse.service.impl;
 
 import com.example.parse.model.DependencyNode;
 import com.example.parse.model.Node;
 import com.example.parse.model.Project;
 import com.example.parse.model.ProjectInstruction;
+import com.example.parse.service.InstructionService;
+import com.example.parse.service.NodeService;
 import lombok.AllArgsConstructor;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
